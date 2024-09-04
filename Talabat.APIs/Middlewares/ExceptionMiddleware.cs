@@ -10,7 +10,7 @@ namespace Talabat.APIs.Middlewares
         private readonly ILogger _logger;
         private readonly IHostEnvironment _environment;
 
-        public ExceptionMiddleware(RequestDelegate next, ILogger logger, IHostEnvironment environment)
+        public ExceptionMiddleware(RequestDelegate next, ILogger<ExceptionMiddleware> logger, IHostEnvironment environment)
         {
             _next = next;
             _logger = logger;
