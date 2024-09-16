@@ -1,7 +1,11 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using StackExchange.Redis;
 using Talabat.APIs.Extensions;
 using Talabat.APIs.Middlewares;
+using Talabat.Core.Entities.Identity;
 using Talabat.Repository.Data;
+using Talabat.Repository.Identity;
 
 namespace Talabat.APIs
 {
@@ -24,16 +28,32 @@ namespace Talabat.APIs
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
             });
 
+            builder.Services.AddDbContext<AppIdentityDbContext>(optionsBuilder =>
+            {
+                optionsBuilder.UseSqlServer(builder.Configuration.GetConnectionString("IdentityConnection"));
+            });
+
+            builder.Services.AddSingleton<IConnectionMultiplexer>((serviceProvider) =>
+            {
+                var connection = builder.Configuration.GetConnectionString("Redis");
+                return ConnectionMultiplexer.Connect(connection);
+            });
+
             // Extensions
 
             builder.Services.AddApplicationServices();
+
+            builder.Services.AddIdentityServices(builder.Configuration);
 
             var app = builder.Build();
 
             using var scope = app.Services.CreateScope();
 
             var services = scope.ServiceProvider;
+
             var _dbContext = services.GetRequiredService<StoreContext>();
+
+            var _identityDbContext = services.GetRequiredService<AppIdentityDbContext>();
 
             var loggerFactory = services.GetRequiredService<ILoggerFactory>();
 
@@ -41,6 +61,11 @@ namespace Talabat.APIs
             {
                 await _dbContext.Database.MigrateAsync();
                 await StoreContextSeed.SeedData(_dbContext);
+
+                await _identityDbContext.Database.MigrateAsync();
+
+                var _userManager = services.GetRequiredService<UserManager<AppUser>>();
+                await AppIdentityDbContextSeed.SeedUsersAsync(_userManager);
             }
             catch (Exception ex)
             {
@@ -58,14 +83,19 @@ namespace Talabat.APIs
                 app.UseSwaggerUI();
             }
 
+            app.UseStatusCodePagesWithReExecute("/errors/{0}");
+
             app.UseHttpsRedirection();
 
             app.UseStaticFiles();
 
             app.UseAuthorization();
 
-
             app.MapControllers();
+
+            app.UseAuthentication();
+
+            app.UseAuthorization();
 
             app.Run();
         }

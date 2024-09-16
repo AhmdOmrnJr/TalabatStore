@@ -1,16 +1,16 @@
 ﻿using Talabat.Core.Entities;
-using Talabat.Core.Specifications.ProductSpecs;
 
-namespace Talabat.Core.Specifications
+namespace Talabat.Core.Specifications.ProductSpecs
 {
     public class ProductWithBrandAndCategorySpecifications : BaseSpecifications<Product>
     {
         public ProductWithBrandAndCategorySpecifications(ProductSpecsParams specsParams)
-            : base(p => 
+            : base(p =>
+                        (string.IsNullOrEmpty(specsParams.Search) || p.Name.Contains(specsParams.Search)) &&
                         (!specsParams.BrandId.HasValue || p.BrandId == specsParams.BrandId.Value) &&
                         (!specsParams.CategoryId.HasValue || p.CategoryId == specsParams.CategoryId.Value)
                   )
-        { 
+        {
             Includes.Add(p => p.Brand);
             Includes.Add(p => p.Category);
 
@@ -18,11 +18,11 @@ namespace Talabat.Core.Specifications
             {
                 switch (specsParams.Sort)
                 {
-                    case ("priceAsc"):
+                    case "priceAsc":
                         AddOrderBy(p => p.Price);
                         break;
 
-                    case ("priceDesc"):
+                    case "priceDesc":
                         AddOrderByDesc(p => p.Price);
                         break;
 
