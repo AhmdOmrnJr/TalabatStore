@@ -45,6 +45,14 @@ namespace Talabat.APIs
 
             builder.Services.AddIdentityServices(builder.Configuration);
 
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("CorsPolicy", options =>
+                {
+                    options.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin(); // you can replace .AllowAnyOrigins() with .UseOrigins(builder.Configuration["Key_Word_From_appSettings"])
+                });
+            });
+
             var app = builder.Build();
 
             using var scope = app.Services.CreateScope();
@@ -88,6 +96,8 @@ namespace Talabat.APIs
             app.UseHttpsRedirection();
 
             app.UseStaticFiles();
+
+            app.UseCors("CorsPolicy");
 
             app.UseAuthorization();
 
