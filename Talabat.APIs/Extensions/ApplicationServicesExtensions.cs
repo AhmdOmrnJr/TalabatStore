@@ -13,6 +13,7 @@ namespace Talabat.APIs.Extensions
     {
         public static IServiceCollection AddApplicationServices(this IServiceCollection services)
         {
+            services.AddSingleton(typeof(IResponseCacheService), typeof(ResponseCacheService));
             services.AddScoped(typeof(IPaymentService), typeof(PaymentService));
             services.AddScoped(typeof(IProductService), typeof(ProductService));
             //services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
