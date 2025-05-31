@@ -1,5 +1,4 @@
-﻿
-namespace Talabat.APIs.Errors
+﻿namespace Talabat.APIs.Errors
 {
     public class ApiResponse
     {

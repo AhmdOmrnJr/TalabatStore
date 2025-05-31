@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Talabat.Core.Specifications.ProductSpecs
+﻿namespace Talabat.Core.Specifications.ProductSpecs
 {
     public class ProductSpecsParams
     {
@@ -13,8 +7,8 @@ namespace Talabat.Core.Specifications.ProductSpecs
         public int? CategoryId { get; set; }
 
         private const int MaxPageSize = 10;
-        private int pageSize = 5;
 
+        private int pageSize = 5;
         public int PageSize
         {
             get { return pageSize; }
@@ -24,7 +18,6 @@ namespace Talabat.Core.Specifications.ProductSpecs
         public int PageIndex { get; set; } = 1;
 
         private string? search;
-
         public string? Search
         {
             get { return search; }

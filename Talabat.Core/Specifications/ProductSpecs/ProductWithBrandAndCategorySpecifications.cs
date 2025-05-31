@@ -9,7 +9,7 @@ namespace Talabat.Core.Specifications.ProductSpecs
                         (string.IsNullOrEmpty(specsParams.Search) || p.Name.Contains(specsParams.Search)) &&
                         (!specsParams.BrandId.HasValue || p.BrandId == specsParams.BrandId.Value) &&
                         (!specsParams.CategoryId.HasValue || p.CategoryId == specsParams.CategoryId.Value)
-                  )
+            )
         {
             Includes.Add(p => p.Brand);
             Includes.Add(p => p.Category);
